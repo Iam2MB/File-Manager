@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="DrawTree.cs" />
     <Compile Include="DrawTreeShort.cs" />
+    <Compile Include="HistoryComand.cs" />
     <Compile Include="InformPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

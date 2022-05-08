@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.IO;
+using System.Collections.Generic;
 
 namespace File_Manager
 {
@@ -9,7 +10,7 @@ namespace File_Manager
         public static int WINDOW_HEIGHT = 35;
         public static int WINDOW_WIDTH = 120;
         private static string currentDir = Directory.GetCurrentDirectory();
-
+        
         static void Main(string[] args)
         {
             {
@@ -87,6 +88,8 @@ namespace File_Manager
                 }
             }
             while (key != 13);
+
+            HistoryComand.HC(command.ToString());
             ParseCommandString(command.ToString());
         }
 
