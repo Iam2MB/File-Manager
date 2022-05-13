@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.IO;
+using System.Collections.Generic;
 
 namespace File_Manager
 {
@@ -9,6 +10,8 @@ namespace File_Manager
         public static int WINDOW_HEIGHT = 35;
         public static int WINDOW_WIDTH = 120;
         private static string currentDir = Directory.GetCurrentDirectory();
+        private static List<string> historyComands = new List<string>();
+        private static int pointHistory;
 
         static void Main(string[] args)
         {
@@ -50,12 +53,19 @@ namespace File_Manager
         {
             (int left, int top) = GetCursorPosition();
             StringBuilder command = new StringBuilder();
+            ConsoleKeyInfo Key;
             char key;
             do
             {
-                key = Console.ReadKey().KeyChar;
+                Key = Console.ReadKey();
+                key = Key.KeyChar;
 
-                if (key != 8 && key != 13)
+                if (Key.Key != ConsoleKey.Backspace && 
+                    Key.Key != ConsoleKey.Enter && 
+                    Key.Key != ConsoleKey.UpArrow && 
+                    Key.Key != ConsoleKey.DownArrow &&
+                    Key.Key != ConsoleKey.LeftArrow &&
+                    Key.Key != ConsoleKey.RightArrow)
                 {
                     command.Append(key);
                 }
@@ -68,7 +78,7 @@ namespace File_Manager
                     Console.Write(" ");
                     Console.SetCursorPosition(currentLeft - 1, top);
                 }
-                if (key == 8)
+                if (Key.Key == ConsoleKey.Backspace)
                 {
                     if (command.Length > 0)
                     {
@@ -85,8 +95,52 @@ namespace File_Manager
                         Console.SetCursorPosition(left, top);
                     }
                 }
+                
+                if (Key.Key == ConsoleKey.DownArrow)
+                {
+                    try
+                    {
+                        DrawConsole(currentDir, 0, 30, WINDOW_WIDTH, 3);
+                        Console.Write(historyComands[pointHistory]);
+                        pointHistory++;
+                        if (pointHistory == historyComands.Count)
+                        {
+                            pointHistory = historyComands.Count - 1;
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                if (Key.Key == ConsoleKey.UpArrow)
+                {
+                    try
+                    {
+                        DrawConsole(currentDir, 0, 30, WINDOW_WIDTH, 3);
+                        Console.Write(historyComands[pointHistory - 1]);
+                        pointHistory--;
+                        if (pointHistory == 0)
+                        {
+                            pointHistory = 1;
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+
+                }
+                
+                if (Key.Key == ConsoleKey.LeftArrow) { Console.SetCursorPosition(currentLeft - 1, top); }
+                if (Key.Key == ConsoleKey.RightArrow) { Console.SetCursorPosition(currentLeft + 1, top); }
+                                
             }
             while (key != 13);
+            historyComands.Add(command.ToString());
+            pointHistory = historyComands.Count;
+            //HistoryComands(command.ToString());
             ParseCommandString(command.ToString());
         }
 
